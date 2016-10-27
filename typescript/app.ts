@@ -41,7 +41,7 @@ class Server {
 
     // View engine setup.  Using Jade.
     this.app.set('views', path.join(__dirname, '../views'));
-    this.app.set('view engine', 'jade');
+    this.app.set('view engine', 'pug');
 
     // Uncomment after placing your favicon in /public.
     //this.app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
