@@ -4,9 +4,9 @@
   "description": "Express Server w/ Typescript Template",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "grunt": "grunt",
-    "start": "node init"
+    "build": "grunt",
+    "start": "node init",
+    "package-for-deploy": "grunt zipForDeploy"
   },
   "author": "Matt Gates",
   "license": "ISC",
@@ -24,5 +24,11 @@
     "tslint": "^3.15.1",
     "typescript": "^2.0.3",
     "typings": "^1.4.0"
+  },
+  "devDependencies": {
+    "grunt-contrib-compress": "^1.4.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-watch": "https://registry.npmjs.org/grunt-contrib-watch/-/grunt-contrib-watch-1.0.0.tgz",
+    "grunt-gitinfo": "^0.1.8"
   }
 }

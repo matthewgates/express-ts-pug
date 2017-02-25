@@ -61,6 +61,9 @@ class Server {
     var indexContoller = new Index.IndexController();
     router.get('/', indexContoller.getIndex.bind(indexContoller));
 
+    var indexContoller = new Index.IndexController();
+    router.get('/index', indexContoller.getIndex.bind(indexContoller));
+
     var usersRoute = new Users.UsersController();
     router.get('/users', usersRoute.getUsers.bind(usersRoute));
 
