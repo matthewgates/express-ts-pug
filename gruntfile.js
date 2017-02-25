@@ -30,7 +30,7 @@ module.exports = function(grunt) {
           {expand: true, src: 'app/**', dest: '<%= dirs.deployFolder %>'},
           {expand: true, src: 'static/**',  dest: '<%= dirs.deployFolder %>'},
           {expand: true, src: 'views/**',  dest: '<%= dirs.deployFolder %>'},
-          {src: ['init.js', 'package.json', 'npm-shrinkwrap.json'], dest: '<%= dirs.deployFolder %>'}
+          {expand: true, src: ['init.js', 'package.json', 'npm-shrinkwrap.json'], dest: '<%= dirs.deployFolder %>'}
         ]
       }
     },
@@ -38,11 +38,15 @@ module.exports = function(grunt) {
       main: {
         options: {
           archive: '<%= dirs.deployZipFile %>',
-          mode: 'zip'
+          //mode: 'gzip',
+          //level: 1
         },
-        files: [
-          {expand: true, cwd: '<%= dirs.deployFolder %>', src: '**'}
-        ]
+        files: [{
+          expand: true,
+          cwd: '<%= dirs.deployFolder %>',
+          src: ['**'],
+          //dest: '/'
+        }]
       }
     },
     dirs: {
