@@ -40,7 +40,7 @@ module.exports = function(grunt) {
       deployZipFile: __dirname  + '/deploy/' + now + '-<%= gitinfo.local.branch.current.shortSHA %>server.zip'
     },
     exec: {
-      echo_platform: {
+      echoPlatform: {
         cmd: function() {
           var platform = process.platform;
           return 'echo platform: ' + platform;
@@ -49,17 +49,18 @@ module.exports = function(grunt) {
       zipMac: {
         cwd: '<%= dirs.deployFolder %>',
         // Zip is built in to Mac.
-        cmd: 'zip -r <%= dirs.deployZipFile %> . -x "*.DS_Store"'
+        // Exclude hidden files and files post-fixed with a ~.
+        cmd: 'zip -r <%= dirs.deployZipFile %> . -x "*/\.*" "*.*~"'
       },
       zipWin: {
-        // 7z
-        cwd: '<%= dirs.deployFolder %>',
+        // 7zip must be installed and is required to be on the PATH
+        // variable in Windows.
+        cwd: '7z a <%= dirs.deployFolder %> .'
       }
     }
   });
 
-  grunt.registerTask('zipAWS', 'Zip deploymenty bundle', function() {
-    grunt.task.run('exec:echo_platform');
+  grunt.registerTask('zipAWS', 'Zip deployment bundle', function() {
     var platform = process.platform;
     if (platform === 'darwin') {
       grunt.task.run('exec:zipMac');
@@ -78,6 +79,7 @@ module.exports = function(grunt) {
   grunt.registerTask('zipForDeploy', 'Queues deploy tasks', function() {
     grunt.task.run('gitinfo');
     grunt.task.run('logSHA');
+    grunt.task.run('exec:echoPlatform');
     grunt.task.run('copy');
     grunt.task.run('zipAWS');
   });
