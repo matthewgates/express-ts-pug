@@ -1,8 +1,9 @@
+var path = require('path');
 module.exports = function(grunt) {
   "use strict";
 
-  grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-gitinfo');
   grunt.loadNpmTasks("grunt-ts");
 
@@ -34,29 +35,42 @@ module.exports = function(grunt) {
         ]
       }
     },
-    compress: {
-      main: {
-        options: {
-          archive: '<%= dirs.deployZipFile %>',
-          //mode: 'gzip',
-          //level: 1
-        },
-        files: [{
-          expand: true,
-          cwd: '<%= dirs.deployFolder %>',
-          src: ['**'],
-          //dest: '/'
-        }]
-      }
-    },
     dirs: {
-      deployFolder: './deploy/' + now +
-          '-<%= gitinfo.local.branch.current.shortSHA %>/',
-      deployZipFile: './deploy/' + now + '-<%= gitinfo.local.branch.current.shortSHA %>server.zip'
+      deployFolder: __dirname  + '/deploy/' + now + '-<%= gitinfo.local.branch.current.shortSHA %>/',
+      deployZipFile: __dirname  + '/deploy/' + now + '-<%= gitinfo.local.branch.current.shortSHA %>server.zip'
+    },
+    exec: {
+      echo_platform: {
+        cmd: function() {
+          var platform = process.platform;
+          return 'echo platform: ' + platform;
+        }
+      },
+      zipMac: {
+        cwd: '<%= dirs.deployFolder %>',
+        // Zip is built in to Mac.
+        cmd: 'zip -r <%= dirs.deployZipFile %> . -x "*.DS_Store"'
+      },
+      zipWin: {
+        // 7z
+        cwd: '<%= dirs.deployFolder %>',
+      }
     }
   });
 
-  grunt.registerTask('logSHA', 'Log Git sha', function() {
+  grunt.registerTask('zipAWS', 'Zip deploymenty bundle', function() {
+    grunt.task.run('exec:echo_platform');
+    var platform = process.platform;
+    if (platform === 'darwin') {
+      grunt.task.run('exec:zipMac');
+    } else if (platform === 'win32') {
+      console.log('TODO: Zip on windows.');
+    } else {
+      console.log('Unsupported platform!');
+    }
+  });
+
+  grunt.registerTask('logSHA', 'Log Git SHA', function() {
     var git = grunt.config('gitinfo');
     console.log('Zipping commit: ' + git.local.branch.current.shortSHA);
   });
@@ -65,7 +79,7 @@ module.exports = function(grunt) {
     grunt.task.run('gitinfo');
     grunt.task.run('logSHA');
     grunt.task.run('copy');
-    grunt.task.run('compress');
+    grunt.task.run('zipAWS');
   });
 
   grunt.registerTask("default", [

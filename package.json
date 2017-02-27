@@ -26,9 +26,9 @@
     "typings": "^1.4.0"
   },
   "devDependencies": {
-    "grunt-contrib-compress": "^1.4.1",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-watch": "https://registry.npmjs.org/grunt-contrib-watch/-/grunt-contrib-watch-1.0.0.tgz",
+    "grunt-exec": "^1.0.1",
     "grunt-gitinfo": "^0.1.8"
   }
 }
